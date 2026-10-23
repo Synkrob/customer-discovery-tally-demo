@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Customer Discovery Tally private concept demo for Synk." />
+  <title>Customer Discovery Tally · Synk concept</title>
+  <style>
+    :root {
+      --ink: #1e2a29;
+      --muted: #6f7a77;
+      --paper: #f7f7f3;
+      --cream: #eeefe9;
+      --line: #d9ddd4;
+      --white: #ffffff;
+      --teal: #f4c400;
+      --teal-dark: #2c2708;
+      --teal-soft: #fff3b8;
+      --brand-foreground: #ffffff;
+      --coral: #ef8b68;
+      --sun: #f4c969;
+      --shadow: 0 18px 50px rgba(26, 42, 39, .09);
+      --radius: 22px;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; background: var(--paper); }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+
+    .app { min-height: 100vh; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; max-width: 1440px; margin: 0 auto; padding: 10px 18px 8px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.82); }
+    .brand { display: inline-flex; align-items: center; gap: 11px; color: var(--ink); font-weight: 800; letter-spacing: -.03em; text-decoration: none; }
+    .daily-survey-title { color: var(--ink); font-size: clamp(16px, 2vw, 21px); font-weight: 950; letter-spacing: -.045em; text-decoration: none; }
+    .brand-mark { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 11px 11px 11px 4px; background: var(--teal); color: var(--brand-foreground); font-weight: 900; font-size: 18px; box-shadow: 5px 5px 0 rgba(239, 139, 104, .46); }
+    .brand small { display: block; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
+    .business-logo-header { display: flex; align-items: center; justify-content: center; width: clamp(82px, 10vw, 126px); height: 40px; padding: 4px 7px; border: 1px solid var(--line); border-radius: 10px; background: var(--white); overflow: hidden; }
+    .business-logo-header img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .demo-chip, .sample-label { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; padding: 8px 11px; color: var(--muted); background: rgba(255,255,255,.72); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .demo-chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--coral); }
+    .avatar { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: var(--sun); color: var(--teal-dark); font-weight: 900; }
+
+    .shell { max-width: 1240px; margin: 0 auto; padding: 0 28px 42px; }
+    .photo-hero { display: none; position: relative; overflow: hidden; min-height: 270px; border-radius: 30px; background: #204844; box-shadow: var(--shadow); isolation: isolate; }
+    .photo-hero::before { content: ""; position: absolute; inset: 0; z-index: -2; background: linear-gradient(115deg, rgba(8, 8, 8, .97) 5%, rgba(8, 8, 8, .78) 52%, rgba(8, 8, 8, .38)), repeating-linear-gradient(90deg, transparent 0 74px, rgba(255,255,255,.09) 75px 77px), linear-gradient(0deg, #f4c400 0 16%, #1c1c1c 16% 55%, #f7d84d 55% 58%, #4b4b4b 58% 100%); }
+    .photo-hero::after { content: ""; position: absolute; right: -5%; top: -35%; width: 42%; height: 150%; z-index: -1; opacity: .35; transform: rotate(18deg); background: repeating-linear-gradient(90deg, transparent 0 26px, rgba(255,255,255,.34) 27px 31px); }
+    .hero-content { display: flex; min-height: 270px; align-items: flex-end; justify-content: space-between; gap: 42px; padding: 36px 42px; color: var(--white); }
+    .hero-copy { max-width: 650px; }
+    .eyebrow { margin: 0 0 14px; color: #d9f0e9; font-size: 12px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 640px; margin-bottom: 13px; font-size: clamp(30px, 4.7vw, 57px); line-height: .99; letter-spacing: -.055em; }
+    .hero-copy p { max-width: 510px; margin-bottom: 0; color: #e2f1eb; font-size: 16px; line-height: 1.5; }
+    .photo-note { align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; padding: 9px 12px 9px 9px; border: 1px solid rgba(255,255,255,.3); border-radius: 14px; color: #f7fbf7; background: rgba(10, 48, 44, .32); font-size: 12px; font-weight: 700; backdrop-filter: blur(8px); }
+    .photo-note strong, .photo-note small { display: block; }
+    .photo-note small { margin-top: 2px; color: #d6e7e1; font-size: 10px; font-weight: 600; }
+    .sample-logo { display: grid; place-items: center; width: 35px; height: 35px; border-radius: 11px 11px 11px 4px; color: var(--brand-foreground); background: var(--teal); font-size: 13px; font-weight: 950; letter-spacing: -.07em; box-shadow: 3px 3px 0 rgba(239, 139, 104, .55); }
+
+    .mode-nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 26px 0 20px; }
+    .mode-tabs { display: flex; gap: 6px; padding: 5px; border: 1px solid var(--line); border-radius: 15px; background: var(--white); }
+    .mode-tab { border: 0; border-radius: 10px; padding: 11px 16px; color: var(--muted); background: transparent; font-size: 14px; font-weight: 800; }
+    .mode-tab:disabled { cursor: not-allowed; opacity: .46; }
+    .mode-tab[aria-selected="true"] { color: var(--brand-foreground); background: var(--teal); box-shadow: 0 4px 12px rgba(15, 103, 99, .20); }
+    .helper { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .content-grid { display: block; }
+    .card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: 0 8px 24px rgba(26, 42, 39, .035); }
+    .main-card { min-height: 500px; padding: clamp(22px, 3.2vw, 38px); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 25px; }
+    .card h2 { margin-bottom: 7px; font-size: clamp(24px, 3vw, 34px); line-height: 1; letter-spacing: -.045em; }
+    .card h3 { margin-bottom: 7px; font-size: 18px; letter-spacing: -.025em; }
+    .subcopy { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .sample-label { border-color: #e3bf72; color: #916a16; background: #fff9e8; white-space: nowrap; }
+    .sample-label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--sun); }
+
+    .record-mode .topbar { max-width: 1440px; padding: 10px 18px 8px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.76); }
+    .record-mode .daily-survey-title { font-size: clamp(16px, 2vw, 20px); }
+    .record-mode .brand { gap: 8px; font-size: 14px; }
+    .record-mode .brand-mark { width: 28px; height: 28px; border-radius: 9px 9px 9px 3px; font-size: 15px; }
+    .record-mode .brand small { font-size: 9px; }
+    .record-mode .demo-chip { padding: 6px 8px; font-size: 9px; }
+    .record-mode .avatar { width: 28px; height: 28px; font-size: 12px; }
+    .record-mode .photo-hero { display: none; }
+    .record-mode .shell { max-width: 1440px; padding: 0 18px 28px; }
+    .record-mode .mode-nav { margin: 10px 0 12px; }
+    .record-mode .record-panel { min-height: 0; padding: 16px 18px 24px; }
+    .record-mode .record-panel .card-header, .record-mode .record-panel .answer-question { display: none; }
+    .record-mode .record-panel > .section-kicker, .record-mode .status-block .section-kicker { display: none; }
+    .record-mode .answer-grid { gap: 10px; }
+    .record-mode .answer-button { min-height: 112px; grid-template-columns: minmax(0, 1fr) 64px; gap: 14px; padding: 17px 18px; }
+    .record-mode .answer-icon { width: 64px; height: 64px; border-radius: 18px; font-size: 28px; }
+    .record-mode .platform-logo { width: 38px; height: 38px; }
+    .record-mode .answer-name { font-size: clamp(18px, 2vw, 30px); }
+
+    @media (min-width: 640px) {
+      .record-mode .answer-grid, .record-mode .answer-grid.compact { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 900px) {
+      .record-mode .answer-grid, .record-mode .answer-grid.compact { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
+    .answer-question { display: flex; align-items: center; gap: 12px; margin: 0 0 15px; font-size: 18px; font-weight: 850; letter-spacing: -.02em; }
+    .section-kicker, .results-section-label { margin: 20px 0 10px; color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .question-mark { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; color: var(--teal); background: var(--teal-soft); font-weight: 900; }
+    .answer-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+    .answer-grid.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .answer-button { min-height: 126px; display: grid; grid-template-columns: minmax(0, 1fr) 72px; align-items: center; gap: 18px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); background: var(--paper); text-align: left; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
+    .answer-button:hover { transform: translateY(-2px); border-color: var(--teal); background: var(--teal-soft); box-shadow: 0 8px 16px rgba(15, 103, 99, .10); }
+    .answer-button:disabled { cursor: wait; opacity: .58; transform: none; }
+    .answer-icon { display: grid; place-items: center; grid-column: 2; width: 72px; height: 72px; border-radius: 20px; color: var(--teal-dark); background: rgba(244, 196, 0, .22); font-size: 31px; font-weight: 950; }
+    .platform-logo { display: block; width: 43px; height: 43px; object-fit: contain; }
+    .answer-button.text-only { grid-template-columns: minmax(0, 1fr); }
+    .answer-name { grid-column: 1; grid-row: 1; width: auto; max-width: none; color: var(--ink); font-weight: 950; line-height: 1; letter-spacing: -.045em; white-space: nowrap; overflow: visible; text-overflow: clip; text-align: left; }
+    .answer-button.text-only .answer-name { justify-self: center; text-align: center; }
+    .answer-name.label-short { font-size: clamp(18px, 2.5vw, 31px); }
+    .answer-name.label-medium { font-size: clamp(15px, 2.1vw, 24px); }
+    .answer-name.label-long { font-size: clamp(12px, 1.8vw, 20px); }
+    .answer-name.label-google-search, .answer-name.label-google-maps { font-size: clamp(18px, 2.5vw, 26px); }
+    .answer-name.allow-wrap { white-space: normal; overflow-wrap: anywhere; }
+    .source-details { margin-top: 18px; border-top: 0; padding-top: 0; }
+    .source-details summary { padding: 11px 13px; border: 1px solid var(--line); border-radius: 12px; background: var(--cream); }
+    .source-details .editor { margin-top: 10px; }
+    .status-block { margin-top: 22px; padding-top: 3px; border-top: 1px solid var(--line); }
+    .status-block .answer-button { background: #fffaf0; border-color: #eadfbe; }
+    .visibility-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .visibility-item { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--white); color: var(--ink); font-size: 12px; font-weight: 750; }
+    .visibility-item input { width: 16px; height: 16px; accent-color: var(--teal); }
+    .editor-label { margin: 0 0 10px; color: var(--muted); font-size: 12px; font-weight: 750; }
+    .custom-slot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 15px; }
+    .custom-slot label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 10px; font-weight: 850; text-transform: uppercase; letter-spacing: .06em; }
+    .custom-slot input { width: 100%; min-width: 0; padding: 10px 11px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--white); font-size: 12px; }
+    .custom-save-row { display: flex; justify-content: flex-end; margin-top: 11px; }
+    .confirmation { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; margin-top: 20px; padding: 10px 12px 10px 16px; border: 1px solid #b8dfce; border-radius: 14px; color: #16594d; background: #ecf8f2; }
+    .confirmation[hidden] { display: none; }
+    .confirmation-message { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; }
+    .check { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; color: var(--white); background: #3f9879; }
+    .undo-button { border: 0; border-radius: 9px; padding: 8px 10px; color: var(--teal-dark); background: rgba(255,255,255,.85); font-size: 12px; font-weight: 850; }
+    .undo-button:hover { background: var(--white); }
+
+    details { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 18px; }
+    summary { display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: var(--teal-dark); font-size: 13px; font-weight: 850; list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 8px; color: var(--teal); background: var(--teal-soft); font-size: 18px; font-weight: 500; }
+    details[open] summary::after { content: "–"; }
+    .editor { margin-top: 16px; padding: 14px; border-radius: 14px; background: var(--cream); }
+    .editor-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 13px; padding: 0; list-style: none; }
+    .editor-item { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); background: var(--white); font-size: 12px; font-weight: 750; }
+    .remove-option { display: grid; place-items: center; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 50%; color: var(--muted); background: transparent; font-size: 15px; }
+    .remove-option:hover { color: #a64c3c; background: #fde4dc; }
+    .add-row { display: flex; gap: 8px; }
+    .add-row input { min-width: 0; flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--white); font-size: 13px; }
+    .small-primary { border: 0; border-radius: 10px; padding: 10px 13px; color: var(--brand-foreground); background: var(--teal); font-size: 12px; font-weight: 850; }
+    .small-primary:hover { background: var(--teal-dark); }
+
+    .side-stack { display: none; }
+    .side-card { padding: 24px; }
+    .side-card h3 { font-size: 17px; }
+    .stat-row { display: flex; justify-content: space-between; align-items: end; gap: 10px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .stat-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .stat-label { color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .stat-value { color: var(--teal-dark); font-size: 25px; font-weight: 900; letter-spacing: -.05em; }
+    .filter { display: flex; gap: 4px; padding: 4px; border-radius: 11px; background: var(--cream); }
+    .filter button { flex: 1; border: 0; border-radius: 8px; padding: 7px 9px; color: var(--muted); background: transparent; font-size: 11px; font-weight: 850; }
+    .filter button[aria-pressed="true"] { color: var(--teal-dark); background: var(--white); box-shadow: 0 2px 6px rgba(26, 42, 39, .08); }
+    .date-semantics { margin: 9px 0 0; color: var(--muted); font-size: 11px; }
+    .role-demo { display: grid; grid-template-columns: auto minmax(170px, 220px); align-items: center; gap: 4px 9px; color: var(--muted); font-size: 11px; }
+    .role-demo label { font-weight: 850; }
+    .role-demo select { padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--white); font-size: 12px; font-weight: 750; }
+    .role-demo span { grid-column: 1 / -1; font-size: 10px; }
+    .small-note { margin: 14px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+    .business-preview { display: flex; align-items: center; gap: 11px; margin-top: 15px; padding: 12px; border-radius: 14px; background: var(--cream); }
+    .business-identity { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+    .business-logo { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px 13px 13px 5px; color: var(--brand-foreground); background: var(--teal); font-size: 13px; font-weight: 950; letter-spacing: -.08em; }
+    .thumb { width: 55px; height: 55px; flex: 0 0 auto; overflow: hidden; position: relative; border-radius: 12px; background: linear-gradient(155deg, #f4c400 0 40%, #4a4a4a 40% 47%, #111111 47% 100%); }
+    .thumb::after { content: ""; position: absolute; inset: 14px 8px 7px; border: 2px solid rgba(255,255,255,.55); border-bottom: 0; border-radius: 4px 4px 0 0; }
+    .business-preview strong { display: block; margin-bottom: 3px; font-size: 12px; }
+    .business-preview span { color: var(--muted); font-size: 11px; line-height: 1.35; }
+    .brand-control { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 14px; padding: 10px 0 0; border-top: 1px solid var(--line); }
+    .brand-control-copy strong, .brand-control-copy span { display: block; }
+    .brand-control-copy strong { font-size: 12px; }
+    .brand-control-copy span { margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .brand-picker { width: 33px; height: 33px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--white); }
+    .brand-picker::-webkit-color-swatch-wrapper { padding: 0; }
+    .brand-picker::-webkit-color-swatch { border: 0; border-radius: 7px; }
+    .brand-picker::-moz-color-swatch { border: 0; border-radius: 7px; }
+
+    .results-panel[hidden], .record-panel[hidden] { display: none; }
+    .results-intro { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 26px; }
+    .results-intro h2 { margin-bottom: 8px; }
+    .big-total { text-align: right; }
+    .big-total strong { display: block; color: var(--teal); font-size: 46px; line-height: .9; letter-spacing: -.07em; }
+    .big-total span { color: var(--muted); font-size: 11px; font-weight: 800; }
+    .result-bars { display: grid; gap: 16px; }
+    .result-row { display: grid; grid-template-columns: minmax(130px, .75fr) minmax(100px, 2fr) 44px; align-items: center; gap: 13px; }
+    .result-name { display: flex; align-items: center; gap: 9px; min-width: 0; font-size: 13px; font-weight: 800; }
+    .result-dot { width: 10px; height: 10px; flex: 0 0 auto; border-radius: 50%; background: var(--coral); }
+    .bar-track { height: 12px; overflow: hidden; border-radius: 999px; background: var(--cream); }
+    .bar-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--teal), #62a991); }
+    .result-count { color: var(--teal-dark); font-size: 14px; font-weight: 900; text-align: right; }
+    .result-footnote { margin-top: 30px; padding: 14px 16px; border-left: 3px solid var(--sun); border-radius: 0 12px 12px 0; color: #6d5b28; background: #fff8df; font-size: 12px; line-height: 1.5; }
+    .result-footnote strong { color: #58491e; }
+    .status-results { margin-top: 28px; padding: 15px 16px; border: 1px solid #eadfbe; border-radius: 14px; background: #fffaf0; }
+    .status-results .results-section-label { margin: 0 0 10px; color: #806b29; }
+    .status-result-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #eee3c9; color: #5f512b; font-size: 12px; font-weight: 750; }
+    .status-result-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .status-result-row strong { color: #806b29; font-size: 14px; }
+
+    .footer-note { display: flex; justify-content: space-between; gap: 20px; margin-top: 25px; padding: 0 4px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .footer-note span:last-child { text-align: right; }
+    .toast { position: fixed; left: 50%; bottom: 20px; z-index: 5; transform: translate(-50%, 18px); opacity: 0; pointer-events: none; padding: 12px 16px; border-radius: 999px; color: var(--white); background: var(--teal-dark); box-shadow: var(--shadow); font-size: 12px; font-weight: 800; transition: opacity .18s ease, transform .18s ease; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 800px) {
+      .topbar { padding: 9px 12px 7px; }
+      .shell { padding: 0 16px 28px; }
+      .photo-hero { border-radius: 22px; }
+      .hero-content { min-height: 325px; display: block; padding: 28px 24px; }
+      .photo-note { margin-top: 31px; }
+      .mode-nav { align-items: flex-start; flex-direction: column; }
+      .content-grid { grid-template-columns: 1fr; }
+      .side-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      .demo-chip { display: none; }
+      .daily-survey-title { font-size: 16px; }
+      .business-logo-header { width: 82px; height: 28px; padding: 3px 5px; }
+      .hero-copy p { font-size: 14px; }
+      .mode-tabs { width: 100%; }
+      .mode-tab { flex: 1; padding: 11px 8px; font-size: 12px; }
+      .helper { font-size: 12px; }
+      .main-card { padding: 22px 18px; }
+      .card-header, .results-intro { display: block; }
+      .sample-label { margin-top: 16px; }
+      .answer-grid, .answer-grid.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .answer-button { min-height: 108px; grid-template-columns: minmax(0, 1fr) 60px; gap: 12px; padding: 16px 15px; }
+      .answer-icon { width: 60px; height: 60px; border-radius: 17px; font-size: 26px; }
+      .platform-logo { width: 36px; height: 36px; }
+      .answer-name.label-short { font-size: clamp(16px, 5vw, 23px); }
+      .answer-name.label-medium { font-size: clamp(12px, 4vw, 19px); }
+      .answer-name.label-long { font-size: clamp(10px, 3.4vw, 17px); }
+      .answer-name.label-google-search, .answer-name.label-google-maps { font-size: clamp(12px, 3.7vw, 18px); }
+      .record-mode .demo-chip { display: inline-flex; }
+      .record-mode .mode-nav { align-items: stretch; gap: 8px; }
+      .record-mode .role-demo { grid-template-columns: auto minmax(0, 1fr); }
+      .record-mode .record-panel { padding: 12px 12px 20px; }
+      .record-mode .answer-grid, .record-mode .answer-grid.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .record-mode .answer-button { min-height: 104px; grid-template-columns: minmax(0, 1fr) 52px; gap: 8px; padding: 14px 11px; }
+      .record-mode .answer-button.text-only { grid-template-columns: minmax(0, 1fr); }
+      .record-mode .answer-icon { width: 52px; height: 52px; border-radius: 15px; font-size: 22px; }
+      .record-mode .platform-logo { width: 31px; height: 31px; }
+      .record-mode .answer-name { line-height: 1; }
+       .record-mode .answer-name.label-short { font-size: clamp(16px, 5vw, 23px); }
+       .record-mode .answer-name.label-medium { font-size: clamp(12px, 4vw, 19px); }
+       .record-mode .answer-name.label-long { font-size: clamp(10px, 3.4vw, 17px); }
+       .record-mode .answer-name.label-google-search, .record-mode .answer-name.label-google-maps { font-size: clamp(12px, 3.7vw, 18px); }
+      .record-mode .status-block { margin-top: 16px; }
+      .side-stack { grid-template-columns: 1fr; }
+      .visibility-list, .custom-slot-grid { grid-template-columns: 1fr; }
+      .big-total { margin-top: 20px; text-align: left; }
+      .result-row { grid-template-columns: minmax(105px, .8fr) minmax(80px, 1.35fr) 34px; gap: 8px; }
+      .result-name { font-size: 11px; }
+      .footer-note { display: block; }
+      .footer-note span:last-child { margin-top: 5px; text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <a class="daily-survey-title" href="#top" aria-label="SMASH Dance Studios Daily Survey home">
+        Daily Survey
+      </a>
+      <div class="topbar-actions">
+        <span class="demo-chip">Demo-only public preview</span>
+        <span class="business-logo-header"><img src="assets/brand/SMASH LOGO 2022.jpg" alt="SMASH Dance Studios logo" /></span>
+      </div>
+    </header>
+
+    <main id="top" class="shell">
+      <section class="photo-hero" aria-labelledby="page-title">
+        <div class="hero-content">
+          <div class="hero-copy">
+            <p class="eyebrow" id="role-eyebrow">SMASH Dance Studios · staff view</p>
+            <h1 id="page-title">See where your dancers first found you.</h1>
+            <p>Capture how people found SMASH in a tap, then see the pattern without the spreadsheet feeling.</p>
+          </div>
+          <div class="photo-note" aria-label="Sample brand logo and photo preview">
+            <span class="sample-logo" aria-hidden="true">S</span>
+            <span><strong>Sample brand</strong><small>Logo + photo placeholder</small></span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="mode-nav" aria-label="Tally modes">
+        <div class="mode-tabs" role="tablist" aria-label="Choose a mode">
+          <button class="mode-tab" id="record-tab" role="tab" aria-selected="true" aria-controls="record-panel">Record an answer</button>
+          <button class="mode-tab" id="results-tab" role="tab" aria-selected="false" aria-controls="results-panel">View results</button>
+        </div>
+        <div class="role-demo">
+          <label for="demo-role">Demo role</label>
+          <select id="demo-role" aria-label="Choose demo role">
+            <option value="staff">Staff · record only</option>
+            <option value="manager">Management · view results</option>
+          </select>
+          <span id="role-note">Public demo only - simulated access - no real security</span>
+        </div>
+      </nav>
+
+      <div class="content-grid">
+        <section class="card main-card record-panel" id="record-panel" role="tabpanel" aria-labelledby="record-tab">
+          <div class="card-header">
+            <div>
+              <h2>Record an answer</h2>
+              <p class="subcopy">Keep it moving at the counter, front desk, or checkout.</p>
+            </div>
+            <span class="sample-label">Sample data</span>
+          </div>
+          <p class="answer-question"><span class="question-mark">?</span>How did you hear about us?</p>
+          <p class="section-kicker">Priority answers</p>
+          <div class="answer-grid" id="answer-grid" aria-label="How did you hear about us answer choices"></div>
+          <div class="status-block">
+            <p class="section-kicker">Other answer types</p>
+            <div class="answer-grid" id="status-grid" aria-label="Fallback and unsure answers"></div>
+          </div>
+          <div class="confirmation" id="confirmation" role="status" aria-live="polite" hidden>
+            <div class="confirmation-message"><span class="check">✓</span><span id="confirmation-text">Saved. Ready for the next answer.</span></div>
+            <button class="undo-button" id="undo-button" type="button">Undo</button>
+          </div>
+
+          <details id="owner-settings" hidden>
+            <summary>Owner settings · sample brand + custom sources</summary>
+            <div class="editor">
+              <p class="editor-label">Management-only demo controls. Full approved sources stay visible for staff; these two slots are for industry-specific additions.</p>
+              <div class="custom-slot-grid">
+                <div class="custom-slot"><label for="custom-source-1">Custom source 1</label><input id="custom-source-1" type="text" maxlength="28" placeholder="e.g. dance recital" /></div>
+                <div class="custom-slot"><label for="custom-source-2">Custom source 2</label><input id="custom-source-2" type="text" maxlength="28" placeholder="e.g. neighborhood group" /></div>
+              </div>
+              <div class="brand-control owner-brand-control">
+                <div class="brand-control-copy"><strong>Sample brand accent</strong><span>Black + yellow · contrast adjusts automatically</span></div>
+                <input class="brand-picker" id="brand-color" type="color" value="#f4c400" aria-label="Choose one sample brand accent color" />
+              </div>
+              <div class="custom-save-row"><button class="small-primary" id="save-custom-sources" type="button">Save custom sources</button></div>
+              <p class="small-note">Sample setup only. No uploads, accounts, or live records are connected.</p>
+            </div>
+          </details>
+        </section>
+
+        <section class="card main-card results-panel" id="results-panel" role="tabpanel" aria-labelledby="results-tab" hidden>
+          <div class="results-intro">
+            <div>
+              <h2>See the pattern</h2>
+              <p class="subcopy">A playful snapshot of answers recorded in your demo workspace.</p>
+            </div>
+            <div class="big-total"><strong id="total-count">27</strong><span>recorded answers</span></div>
+          </div>
+          <div class="filter" role="group" aria-label="Results date range">
+            <button type="button" data-range="day" aria-pressed="true">Today</button>
+            <button type="button" data-range="week" aria-pressed="false">This week</button>
+            <button type="button" data-range="month" aria-pressed="false">This month</button>
+          </div>
+          <p class="date-semantics">Business-local dates · San Antonio · America/Chicago</p>
+          <p class="results-section-label">Discovery sources</p>
+          <div class="result-bars" id="result-bars"></div>
+          <div class="status-results">
+            <p class="results-section-label">Recorded separately · not a discovery channel</p>
+            <div id="status-results" aria-label="Returning customer and fallback answers"></div>
+          </div>
+          <p class="result-footnote"><strong>Read this as a conversation signal.</strong> These are explicitly recorded answers - not unique people, sales, or proof that a source caused a visit. Returning customer is shown separately as a status.</p>
+        </section>
+
+        <aside hidden class="side-stack" aria-label="Workspace summary">
+          <section class="card side-card">
+            <h3>Quick pulse</h3>
+            <div class="stat-row"><span class="stat-label">Answers today</span><strong class="stat-value" id="today-count">6</strong></div>
+            <div class="stat-row"><span class="stat-label">Top answer this week</span><strong class="stat-value" id="top-answer">Google</strong></div>
+            <p class="small-note">Sample data is here so the flow feels real before any real customer records exist.</p>
+          </section>
+          <section class="card side-card">
+            <h3>Business details</h3>
+            <p class="subcopy">Only the essentials for this concept.</p>
+            <div class="business-preview">
+              <div class="business-identity"><div class="business-logo" aria-hidden="true">S</div><div class="thumb" aria-hidden="true"></div></div>
+              <div><strong id="business-name">SMASH Dance Studios</strong><span>Sample brand placeholder<br />No approved logo/photo in workspace</span></div>
+            </div>
+            <div class="brand-control">
+              <div class="brand-control-copy"><strong>Sample brand accent</strong><span>Black + yellow · contrast adjusts automatically</span></div>
+              <input class="brand-picker" id="brand-color" type="color" value="#f4c400" aria-label="Choose one sample brand accent color" />
+            </div>
+            <details>
+              <summary>Edit name</summary>
+              <div class="add-row" style="margin-top: 12px">
+                <input id="business-name-input" type="text" maxlength="32" value="SMASH Dance Studios" aria-label="Business name" />
+                <button class="small-primary" id="save-name" type="button">Save</button>
+              </div>
+            </details>
+          </section>
+        </aside>
+      </div>
+
+      <div class="footer-note">
+        <span>Private local concept · simulated sign-in · no backend, OAuth, payment, or customer records.</span>
+        <span>Future pricing, AI suggestions, and automation are intentionally parked.</span>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      const approvedOptions = [
+        { id: 'google-search', label: 'Google Search', icon: 'G', asset: 'google.svg', kind: 'channel' },
+        { id: 'google-maps', label: 'Google Maps', icon: 'M', asset: 'googlemaps.svg', kind: 'channel' },
+        { label: 'Facebook', icon: 'f', asset: 'facebook.svg', kind: 'channel' },
+        { label: 'Instagram', icon: '◎', asset: 'instagram.svg', kind: 'channel' },
+        { label: 'TikTok', icon: '♪', asset: 'tiktok.svg', kind: 'channel' },
+        { label: 'YouTube', icon: '▶', asset: 'youtube.svg', kind: 'channel' },
+        { label: 'Apple Maps', icon: 'A', asset: 'apple.svg', kind: 'channel' },
+        { label: 'Yelp', icon: 'Y', asset: 'yelp.svg', kind: 'channel' },
+        { label: 'Bing', icon: 'B', asset: 'microsoftbing.svg', kind: 'channel' },
+        { label: 'ChatGPT', icon: 'C', asset: 'openai.svg', kind: 'channel' },
+        { label: 'Gemini', icon: 'G', asset: 'googlegemini.svg', kind: 'channel' },
+        { label: 'Claude', icon: 'C', asset: 'claude.svg', kind: 'channel' },
+        { label: 'Other AI', icon: '✦', kind: 'channel' },
+        { label: 'Friend / family', icon: '↗', kind: 'channel' },
+        { label: 'Another business', icon: '↔', kind: 'channel' },
+        { label: 'Walked / drove past', icon: '→', kind: 'channel' },
+        { id: 'website', label: 'Website', kind: 'channel' },
+        { label: 'Event', icon: 'E', kind: 'channel' },
+        { label: 'Flyer / promotion', icon: '%', kind: 'channel' },
+        { label: 'School / community organization', icon: 'S', kind: 'channel' },
+        { label: 'Project SMASH', icon: 'P', kind: 'channel' },
+        { label: 'Returning customer', icon: '↻', kind: 'status' },
+        { label: 'Other', icon: '…', kind: 'fallback' },
+        { label: 'Not sure', icon: '?', kind: 'fallback' }
+      ];
+      const defaultVisible = ['Google Search', 'Google Maps', 'Facebook', 'Instagram', 'TikTok', 'YouTube', 'ChatGPT', 'Gemini', 'Claude', 'Friend / family', 'Project SMASH'];
+      const sampleDayChannels = [['Google Search / Maps', 2, 'google-search-maps-legacy'], ['Friend / family', 1], ['ChatGPT', 1], ['Website', 0]];
+      const sampleDayStatus = [['Returning customer', 1], ['Not sure', 1]];
+      const sampleWeekChannels = [
+        ['Google Search / Maps', 8, 'google-search-maps-legacy'], ['Friend / family', 5], ['Facebook', 3], ['ChatGPT', 2], ['Project SMASH', 2], ['Flyer / promotion', 1], ['Event', 1], ['TikTok', 1], ['Website', 0]
+      ];
+      const sampleMonthChannels = [
+        ['Google Search / Maps', 25, 'google-search-maps-legacy'], ['Friend / family', 18], ['Facebook', 11], ['ChatGPT', 9], ['Project SMASH', 8], ['Flyer / promotion', 5], ['Event', 4], ['TikTok', 3], ['Instagram', 3], ['Apple Maps', 2], ['Website', 0]
+      ];
+      const sampleWeekStatus = [['Returning customer', 2], ['Other', 1], ['Not sure', 1]];
+      const sampleMonthStatus = [['Returning customer', 3], ['Other', 1], ['Not sure', 1]];
+      let visibleSources = [...defaultVisible];
+      let customSources = ['', ''];
+      let lastRecorded = null;
+      let selectedRange = 'day';
+      let saveTimer;
+
+      const answerGrid = document.querySelector('#answer-grid');
+      const moreAnswerGrid = document.querySelector('#more-answer-grid');
+      const statusGrid = document.querySelector('#status-grid');
+      const visibilityList = document.querySelector('#visibility-list');
+      const moreCount = document.querySelector('#more-count');
+      const confirmation = document.querySelector('#confirmation');
+      const confirmationText = document.querySelector('#confirmation-text');
+      const toast = document.querySelector('#toast');
+      const topAnswer = document.querySelector('#top-answer');
+      const totalCount = document.querySelector('#total-count');
+      const resultBars = document.querySelector('#result-bars');
+      const statusResults = document.querySelector('#status-results');
+
+      const optionByLabel = new Map(approvedOptions.map((option) => [option.label, option]));
+      const optionById = new Map(approvedOptions.filter((option) => option.id).map((option) => [option.id, option]));
+      function getOption(label) { return optionByLabel.get(label) || { label, icon: '•', kind: 'channel' }; }
+
+      function renderSourceIcon(option) {
+        return option.asset
+          ? `<span class="answer-icon"><img class="platform-logo" src="assets/platforms/${escapeHtml(option.asset)}" alt="" aria-hidden="true" /></span>`
+          : '';
+      }
+
+      function labelClass(label) {
+        if (label === 'Google Search') return 'label-google-search';
+        if (label === 'Google Maps') return 'label-google-maps';
+        if (label.length >= 27) return 'label-long';
+        if (label.length >= 18) return 'label-medium';
+        return 'label-short';
+      }
+
+      function labelWrapClass(label) {
+        return label === 'School / community organization' ? ' allow-wrap' : '';
+      }
+
+      function hexToRgb(hex) {
+        const value = hex.replace('#', '');
+        const normalized = value.length === 3 ? value.split('').map((part) => part + part).join('') : value;
+        const number = Number.parseInt(normalized, 16);
+        return { r: (number >> 16) & 255, g: (number >> 8) & 255, b: number & 255 };
+      }
+
+      function rgbToHex({ r, g, b }) {
+        return `#${[r, g, b].map((part) => Math.max(0, Math.min(255, Math.round(part))).toString(16).padStart(2, '0')).join('')}`;
+      }
+
+      function blend(hex, target, amount) {
+        const source = hexToRgb(hex);
+        const destination = hexToRgb(target);
+        return rgbToHex({
+          r: source.r + (destination.r - source.r) * amount,
+          g: source.g + (destination.g - source.g) * amount,
+          b: source.b + (destination.b - source.b) * amount
+        });
+      }
+
+      function setBrandColor(hex) {
+        const rgb = hexToRgb(hex);
+        const luminance = ((0.299 * rgb.r) + (0.587 * rgb.g) + (0.114 * rgb.b)) / 255;
+        const foreground = luminance > 0.58 ? '#163431' : '#ffffff';
+        document.documentElement.style.setProperty('--teal', hex);
+        document.documentElement.style.setProperty('--teal-dark', blend(hex, '#071c1b', luminance > 0.58 ? .42 : .24));
+        document.documentElement.style.setProperty('--teal-soft', blend(hex, '#ffffff', .84));
+        document.documentElement.style.setProperty('--brand-foreground', foreground);
+      }
+
+      function renderOptions() {
+        const priorityLabels = ['Google Search', 'Google Maps', 'Friend / family', 'Apple Maps', 'Yelp', 'Facebook', 'Instagram', 'TikTok', 'Walked / drove past', 'Website', 'ChatGPT', 'Gemini', 'Claude', 'Other AI', 'Another business', 'Event', 'Flyer / promotion', 'School / community organization', 'Project SMASH', 'YouTube', 'Bing'];
+        const returningCustomer = approvedOptions.find((option) => option.label === 'Returning customer');
+        const priorityOptions = priorityLabels.map((label) => optionByLabel.get(label)).filter(Boolean);
+        const remainingChannels = approvedOptions.filter((option) => option.kind === 'channel' && !priorityLabels.includes(option.label));
+        const allSources = [priorityOptions[0], priorityOptions[1], returningCustomer, ...priorityOptions.slice(2), ...remainingChannels, ...customSources.filter(Boolean).map((label) => ({ label, icon: '•', kind: 'channel' }))].filter(Boolean);
+        const renderButton = (option) => `
+          <button class="answer-button ${option.asset ? 'has-platform-logo' : 'text-only'}" type="button" data-answer="${escapeHtml(option.label)}" data-source-id="${escapeHtml(option.id || option.label)}">
+            <span class="answer-name ${labelClass(option.label)}${labelWrapClass(option.label)}">${escapeHtml(option.label)}</span>
+            ${renderSourceIcon(option)}
+          </button>`;
+        answerGrid.innerHTML = allSources.map(renderButton).join('');
+        statusGrid.innerHTML = approvedOptions.filter((option) => option.kind !== 'channel' && option.label !== 'Returning customer').map((option) => `
+          <button class="answer-button text-only" type="button" data-answer="${escapeHtml(option.label)}" data-source-id="${escapeHtml(option.id || option.label)}">
+            <span class="answer-name ${labelClass(option.label)}${labelWrapClass(option.label)}">${escapeHtml(option.label)}</span>
+          </button>`).join('');
+      }
+
+      function renderResults() {
+        const data = selectedRange === 'day' ? sampleDayChannels : selectedRange === 'week' ? sampleWeekChannels : sampleMonthChannels;
+        const statusData = selectedRange === 'day' ? sampleDayStatus : selectedRange === 'week' ? sampleWeekStatus : sampleMonthStatus;
+        const max = Math.max(...data.map((item) => item[1]));
+        const total = [...data, ...statusData].reduce((sum, item) => sum + item[1], 0);
+        totalCount.textContent = total;
+        topAnswer.textContent = data[0][0];
+        resultBars.innerHTML = data.map(([label, count], index) => `
+          <div class="result-row">
+            <div class="result-name"><span class="result-dot" style="background: ${index === 0 ? 'var(--coral)' : index === 1 ? 'var(--sun)' : 'var(--teal)'}"></span><span>${escapeHtml(label)}</span></div>
+            <div class="bar-track" aria-label="${escapeHtml(label)}: ${count} recorded answers"><div class="bar-fill" style="width: ${Math.round((count / max) * 100)}%; opacity: ${Math.max(.55, 1 - index * .06)}"></div></div>
+            <div class="result-count">${count}</div>
+          </div>`).join('');
+        statusResults.innerHTML = statusData.map(([label, count]) => `
+          <div class="status-result-row"><span>${escapeHtml(label)}</span><strong>${count}</strong></div>`).join('');
+      }
+
+      function recordAnswer(label, sourceId) {
+        if (saveTimer) return;
+        const buttons = [...document.querySelectorAll('.answer-button')];
+        buttons.forEach((button) => { button.disabled = true; });
+        lastRecorded = { label, sourceId: sourceId || label };
+        const option = optionById.get(sourceId) || getOption(label);
+        confirmationText.textContent = option.kind === 'status'
+          ? `Saved - ${label}. Tagged separately from discovery sources.`
+          : `Saved - ${label}. Ready for the next answer.`;
+        confirmation.hidden = false;
+        saveTimer = window.setTimeout(() => {
+          buttons.forEach((button) => { button.disabled = false; });
+          saveTimer = null;
+        }, 520);
+        showToast('Saved to this private demo only');
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 2400);
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+      }
+
+      document.querySelector('#record-tab').addEventListener('click', () => switchMode('record'));
+      document.querySelector('#results-tab').addEventListener('click', () => switchMode('results'));
+      function updateRole(role) {
+        const isStaff = role === 'staff';
+        const resultsTab = document.querySelector('#results-tab');
+        resultsTab.disabled = isStaff;
+        resultsTab.setAttribute('aria-disabled', String(isStaff));
+        document.querySelector('#owner-settings').hidden = isStaff;
+        document.querySelector('#role-eyebrow').textContent = isStaff ? 'SMASH Dance Studios · staff view' : 'SMASH Dance Studios · management view';
+        document.querySelector('#role-note').textContent = isStaff ? 'Staff can record only · demo-only access simulation' : 'Management can view results · demo-only access simulation';
+        if (isStaff) switchMode('record');
+      }
+      function switchMode(mode) {
+        const isRecord = mode === 'record';
+        document.body.classList.toggle('record-mode', isRecord);
+        if (!isRecord && document.querySelector('#demo-role').value === 'staff') {
+          showToast('View results is a management demo role');
+          return;
+        }
+        document.querySelector('#record-tab').setAttribute('aria-selected', String(isRecord));
+        document.querySelector('#results-tab').setAttribute('aria-selected', String(!isRecord));
+        document.querySelector('#record-panel').hidden = !isRecord;
+        document.querySelector('#results-panel').hidden = isRecord;
+        if (!isRecord) renderResults();
+      }
+
+      answerGrid.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-answer]');
+        if (button) recordAnswer(button.dataset.answer, button.dataset.sourceId);
+      });
+      document.querySelector('#undo-button').addEventListener('click', () => {
+        if (!lastRecorded) return;
+        confirmation.hidden = true;
+        showToast(`Undid "${lastRecorded.label}" in the demo`);
+        lastRecorded = null;
+      });
+      statusGrid.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-answer]');
+        if (button) recordAnswer(button.dataset.answer, button.dataset.sourceId);
+      });
+      document.querySelector('#save-custom-sources').addEventListener('click', () => {
+        customSources = [1, 2].map((index) => document.querySelector(`#custom-source-${index}`).value.trim()).filter((label, index, list) => label && list.indexOf(label) === index).slice(0, 2);
+        while (customSources.length < 2) customSources.push('');
+        renderOptions();
+        showToast('Custom sources saved in this demo');
+      });
+      document.querySelector('#demo-role').addEventListener('change', (event) => updateRole(event.target.value));
+      document.querySelector('#brand-color').addEventListener('input', (event) => {
+        setBrandColor(event.target.value);
+        showToast('Sample brand accent updated');
+      });
+      document.querySelector('.filter').addEventListener('click', (event) => {
+        const button = event.target.closest('[data-range]');
+        if (!button) return;
+        selectedRange = button.dataset.range;
+        document.querySelectorAll('[data-range]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+        renderResults();
+      });
+
+      renderOptions();
+      renderResults();
+      setBrandColor(document.querySelector('#brand-color').value);
+      updateRole('staff');
+    })();
+  </script>
+</body>
+</html>
