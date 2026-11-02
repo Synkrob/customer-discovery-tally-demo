@@ -119,6 +119,7 @@
     .answer-button:disabled { cursor: wait; opacity: .58; transform: none; }
     .answer-icon { display: grid; place-items: center; grid-column: 2; width: 72px; height: 72px; border-radius: 20px; color: var(--teal-dark); background: rgba(244, 196, 0, .22); font-size: 31px; font-weight: 950; }
     .platform-logo { display: block; width: 43px; height: 43px; object-fit: contain; }
+    .generic-icon svg { display: block; width: 43px; height: 43px; }
     .answer-button.text-only { grid-template-columns: minmax(0, 1fr); }
     .answer-name { grid-column: 1; grid-row: 1; width: auto; max-width: none; color: var(--ink); font-weight: 950; line-height: 1; letter-spacing: -.045em; white-space: nowrap; overflow: visible; text-overflow: clip; text-align: left; }
     .answer-button.text-only .answer-name { justify-self: center; text-align: center; }
@@ -284,7 +285,7 @@
       .answer-grid, .answer-grid.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .answer-button { min-height: 108px; grid-template-columns: minmax(0, 1fr) 60px; gap: 12px; padding: 16px 15px; }
       .answer-icon { width: 60px; height: 60px; border-radius: 17px; font-size: 26px; }
-      .platform-logo { width: 36px; height: 36px; }
+      .platform-logo, .generic-icon svg { width: 36px; height: 36px; }
       .answer-name.label-short { font-size: clamp(16px, 5vw, 23px); }
       .answer-name.label-medium { font-size: clamp(12px, 4vw, 19px); }
       .answer-name.label-long { font-size: clamp(10px, 3.4vw, 17px); }
@@ -297,7 +298,7 @@
       .record-mode .answer-button { min-height: 104px; grid-template-columns: minmax(0, 1fr) 52px; gap: 8px; padding: 14px 11px; }
       .record-mode .answer-button.text-only { grid-template-columns: minmax(0, 1fr); }
       .record-mode .answer-icon { width: 52px; height: 52px; border-radius: 15px; font-size: 22px; }
-      .record-mode .platform-logo { width: 31px; height: 31px; }
+      .record-mode .platform-logo, .record-mode .generic-icon svg { width: 31px; height: 31px; }
       .record-mode .answer-name { line-height: 1; }
        .record-mode .answer-name.label-short { font-size: clamp(16px, 5vw, 23px); }
        .record-mode .answer-name.label-medium { font-size: clamp(12px, 4vw, 19px); }
@@ -386,6 +387,8 @@
               <option value="alkaline-water">Alkaline Water Store</option>
               <option value="roadmap-brewing">Roadmap Brewing Company</option>
               <option value="coffee-shop">Coffee Shop</option>
+              <option value="bakery">Bakery</option>
+              <option value="restaurant">Restaurant</option>
             </select>
           </label>
           <span class="demo-only-badge">DEMO ONLY � HOSTED TEST PREVIEW</span>
@@ -398,6 +401,8 @@
                 <option value="alkaline-water">Alkaline Water Store - sample</option>
                 <option value="roadmap-brewing">Roadmap Brewing Company - sample</option>
                 <option value="coffee-shop">Coffee Shop - fictional sample</option>
+                <option value="bakery">Bakery - fictional sample</option>
+                <option value="restaurant">Restaurant - fictional sample</option>
                 <option value="smash-dance">SMASH Dance Studios · sample</option>
                 <option value="alkaline-leon-valley">Alkaline Water Leon Valley · sample</option>
                 <option value="alkaline-austin-highway">Alkaline Water Austin Highway · sample</option>
@@ -564,6 +569,17 @@
         { label: 'Other', icon: '…', kind: 'fallback' },
         { label: 'Not sure', icon: '?', kind: 'fallback' }
       ];
+      const genericSourceSymbols = {
+        'Returning customer': 'person',
+        'Walked / drove past': 'vehicle',
+        Website: 'globe',
+        Event: 'calendar',
+        'Flyer / promotion': 'flyer'
+      };
+      approvedOptions.forEach((option) => {
+        if (genericSourceSymbols[option.label]) option.symbol = genericSourceSymbols[option.label];
+        if (option.label === 'Flyer / promotion') option.displayLabel = 'Flyers';
+      });
       const defaultVisible = ['Google Search', 'Google Maps', 'Facebook', 'Instagram', 'TikTok', 'YouTube', 'ChatGPT', 'Gemini', 'Claude', 'Friend / family', 'Project SMASH'];
       const sampleDayChannels = [['Google Search / Maps', 2, 'google-search-maps-legacy'], ['Friend / family', 1], ['ChatGPT', 1], ['Website', 0]];
       const sampleDayStatus = [['Returning customer', 1], ['Not sure', 1]];
@@ -606,6 +622,22 @@
             day: { channels: [['Walked / drove past', 4], ['Friend / family', 2], ['Google Maps', 1], ['Website', 0]], status: [['Returning customer', 2]] },
             week: { channels: [['Walked / drove past', 16], ['Friend / family', 9], ['Google Maps', 7], ['Instagram', 4], ['Website', 2]], status: [['Returning customer', 5], ['Other', 1]] },
             month: { channels: [['Walked / drove past', 42], ['Friend / family', 28], ['Google Maps', 21], ['Instagram', 14], ['Website', 8]], status: [['Returning customer', 12], ['Other', 3]] }
+          }
+        },
+        'bakery': {
+          businessName: 'Bakery', industry: 'Bakery', accent: '#d97736', logo: '', photo: '',
+          samples: {
+            day: { channels: [['Google Maps', 3], ['Walked / drove past', 2], ['Friend / family', 1], ['Website', 0]], status: [['Returning customer', 1]] },
+            week: { channels: [['Google Maps', 13], ['Walked / drove past', 9], ['Friend / family', 6], ['Instagram', 4], ['Website', 2]], status: [['Returning customer', 4], ['Other', 1]] },
+            month: { channels: [['Google Maps', 34], ['Walked / drove past', 25], ['Friend / family', 19], ['Instagram', 11], ['Website', 7]], status: [['Returning customer', 9], ['Other', 2]] }
+          }
+        },
+        'restaurant': {
+          businessName: 'Restaurant', industry: 'Restaurant', accent: '#5c4db1', logo: '', photo: '',
+          samples: {
+            day: { channels: [['Google Maps', 4], ['Friend / family', 2], ['Yelp', 1], ['Website', 0]], status: [['Returning customer', 1]] },
+            week: { channels: [['Google Maps', 17], ['Friend / family', 10], ['Facebook', 6], ['Yelp', 4], ['Website', 3]], status: [['Returning customer', 5], ['Not sure', 1]] },
+            month: { channels: [['Google Maps', 46], ['Friend / family', 31], ['Facebook', 18], ['Yelp', 12], ['Website', 8]], status: [['Returning customer', 13], ['Not sure', 2]] }
           }
         },
         'alkaline-leon-valley': {
@@ -776,6 +808,8 @@
         const requested = new URLSearchParams(window.location.search).get('business');
         if (requested === 'roadmap-brewing') return 'roadmap-brewing';
         if (requested === 'coffee-shop') return 'coffee-shop';
+        if (requested === 'bakery') return 'bakery';
+        if (requested === 'restaurant') return 'restaurant';
         return requested === 'alkaline-water' ? 'alkaline-water' : 'smash-dance';
       }
 
@@ -794,11 +828,16 @@
       }
 
       function renderSourceIcon(option) {
-        return option.asset
-          ? `<span class="answer-icon"><img class="platform-logo" src="assets/platforms/${escapeHtml(option.asset)}" alt="" aria-hidden="true" /></span>`
-          : '';
+        if (option.asset) return '<span class="answer-icon"><img class="platform-logo" src="assets/platforms/' + escapeHtml(option.asset) + '" alt="" aria-hidden="true" /></span>';
+        const symbols = {
+          person: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>',
+          vehicle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14l-1-7H6l-1 7Z"/><path d="m7 10 1.2-3h7.6l1.2 3M7 17v2m10-2v2M4 14h2m12 0h2"/></svg>',
+          globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+          calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>',
+          flyer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h13v16H6zM3 7h3v13H3zM9 8h7M9 12h7M9 16h4"/></svg>'
+        };
+        return option.symbol && symbols[option.symbol] ? '<span class="answer-icon generic-icon" aria-hidden="true">' + symbols[option.symbol] + '</span>' : '';
       }
-
       function labelClass(label) {
         if (label === 'Google Search') return 'label-google-search';
         if (label === 'Google Maps') return 'label-google-maps';
@@ -848,22 +887,23 @@
 
       function renderOptions() {
         const priorityLabels = ['Google Search', 'Google Maps', 'Friend / family', 'Apple Maps', 'Yelp', 'Facebook', 'Instagram', 'TikTok', 'Walked / drove past', 'Website', 'ChatGPT', 'Gemini', 'Claude', 'Other AI', 'Another business', 'Event', 'Flyer / promotion', 'School / community organization', 'Project SMASH', 'YouTube', 'Bing'];
+        const nonSmashHiddenLabels = new Set(['School / community organization', 'Project SMASH', 'YouTube', 'Bing', 'Event', 'Other AI']);
+        const isVisibleForProfile = (option) => activeProfileId === 'smash-dance' || !nonSmashHiddenLabels.has(option.label);
+        const visiblePriorityLabels = priorityLabels.filter((label) => activeProfileId === 'smash-dance' || !nonSmashHiddenLabels.has(label));
         const returningCustomer = approvedOptions.find((option) => option.label === 'Returning customer');
-        const priorityOptions = priorityLabels.map((label) => optionByLabel.get(label)).filter(Boolean);
-        const remainingChannels = approvedOptions.filter((option) => option.kind === 'channel' && !priorityLabels.includes(option.label));
+        const priorityOptions = visiblePriorityLabels.map((label) => optionByLabel.get(label)).filter(Boolean);
+        const remainingChannels = approvedOptions.filter((option) => option.kind === 'channel' && isVisibleForProfile(option) && !priorityLabels.includes(option.label));
         const allSources = [priorityOptions[0], priorityOptions[1], returningCustomer, ...priorityOptions.slice(2), ...remainingChannels, ...customSources.filter(Boolean).map((label) => ({ label, icon: '•', kind: 'channel' }))].filter(Boolean);
-        const renderButton = (option) => `
-          <button class="answer-button ${option.asset ? 'has-platform-logo' : 'text-only'}" type="button" data-answer="${escapeHtml(option.label)}" data-source-id="${escapeHtml(option.id || option.label)}">
-            <span class="answer-name ${labelClass(option.label)}${labelWrapClass(option.label)}">${escapeHtml(option.label)}</span>
-            ${renderSourceIcon(option)}
-          </button>`;
+        const renderButton = (option) => {
+          const shownLabel = option.displayLabel || option.label;
+          const layoutClass = option.asset || option.symbol ? 'has-platform-logo' : 'text-only';
+          return '<button class="answer-button ' + layoutClass + '" type="button" data-answer="' + escapeHtml(option.label) + '" data-source-id="' + escapeHtml(option.id || option.label) + '">' +
+            '<span class="answer-name ' + labelClass(shownLabel) + labelWrapClass(option.label) + '">' + escapeHtml(shownLabel) + '</span>' +
+            renderSourceIcon(option) + '</button>';
+        };
         answerGrid.innerHTML = allSources.map(renderButton).join('');
-        statusGrid.innerHTML = approvedOptions.filter((option) => option.kind !== 'channel' && option.label !== 'Returning customer').map((option) => `
-          <button class="answer-button text-only" type="button" data-answer="${escapeHtml(option.label)}" data-source-id="${escapeHtml(option.id || option.label)}">
-            <span class="answer-name ${labelClass(option.label)}${labelWrapClass(option.label)}">${escapeHtml(option.label)}</span>
-          </button>`).join('');
+        statusGrid.innerHTML = approvedOptions.filter((option) => option.kind !== 'channel' && option.label !== 'Returning customer').map((option) => '<button class="answer-button text-only" type="button" data-answer="' + escapeHtml(option.label) + '" data-source-id="' + escapeHtml(option.id || option.label) + '"><span class="answer-name ' + labelClass(option.label) + labelWrapClass(option.label) + '">' + escapeHtml(option.label) + '</span></button>').join('');
       }
-
       function renderResults() {
         const profile = demoProfiles[activeProfileId];
         const data = profile.samples[selectedRange].channels;
@@ -871,10 +911,11 @@
         const max = Math.max(...data.map((item) => item[1]));
         const total = [...data, ...statusData].reduce((sum, item) => sum + item[1], 0);
         totalCount.textContent = total;
-        topAnswer.textContent = data[0][0];
+        const displaySourceLabel = (label) => optionByLabel.get(label)?.displayLabel || label;
+        topAnswer.textContent = displaySourceLabel(data[0][0]);
         resultBars.innerHTML = data.map(([label, count], index) => `
           <div class="result-row">
-            <div class="result-name"><span class="result-dot" style="background: ${index === 0 ? 'var(--coral)' : index === 1 ? 'var(--sun)' : 'var(--teal)'}"></span><span>${escapeHtml(label)}</span></div>
+            <div class="result-name"><span class="result-dot" style="background: ${index === 0 ? 'var(--coral)' : index === 1 ? 'var(--sun)' : 'var(--teal)'}"></span><span>${escapeHtml(displaySourceLabel(label))}</span></div>
             <div class="bar-track" aria-label="${escapeHtml(label)}: ${count} recorded answers"><div class="bar-fill" style="width: ${Math.round((count / max) * 100)}%; opacity: ${Math.max(.55, 1 - index * .06)}"></div></div>
             <div class="result-count">${count}</div>
           </div>`).join('');
