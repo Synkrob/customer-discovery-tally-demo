@@ -117,8 +117,8 @@
     .answer-button { min-height: 126px; display: grid; grid-template-columns: minmax(0, 1fr) 72px; align-items: center; gap: 18px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); background: var(--paper); text-align: left; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
     .answer-button:hover { transform: translateY(-2px); border-color: var(--teal); background: var(--teal-soft); box-shadow: 0 8px 16px rgba(15, 103, 99, .10); }
     .answer-button:disabled { cursor: wait; opacity: .58; transform: none; }
-    .answer-icon { display: grid; place-items: center; grid-column: 2; width: 72px; height: 72px; border-radius: 20px; color: var(--teal-dark); background: rgba(244, 196, 0, .22); font-size: 31px; font-weight: 950; }
-    .platform-logo { display: block; width: 43px; height: 43px; object-fit: contain; }
+    .answer-icon { display: grid; place-items: center; grid-column: 2; width: 72px; height: 72px; border-radius: 20px; color: var(--answer-icon-fg, var(--teal-dark)); background: var(--answer-icon-bg, rgba(244, 196, 0, .22)); font-size: 31px; font-weight: 950; }
+    .platform-logo { display: block; width: 43px; height: 43px; object-fit: contain; filter: var(--platform-logo-filter, none); }
     .generic-icon svg { display: block; width: 43px; height: 43px; }
     .answer-button.text-only { grid-template-columns: minmax(0, 1fr); }
     .answer-name { grid-column: 1; grid-row: 1; width: auto; max-width: none; color: var(--ink); font-weight: 950; line-height: 1; letter-spacing: -.045em; white-space: nowrap; overflow: visible; text-overflow: clip; text-align: left; }
@@ -886,10 +886,14 @@
         const rgb = hexToRgb(hex);
         const luminance = ((0.299 * rgb.r) + (0.587 * rgb.g) + (0.114 * rgb.b)) / 255;
         const foreground = luminance > 0.58 ? '#163431' : '#ffffff';
+        const alkalineIconPalette = activeProfileId === 'alkaline-water';
         document.documentElement.style.setProperty('--teal', hex);
         document.documentElement.style.setProperty('--teal-dark', blend(hex, '#071c1b', luminance > 0.58 ? .42 : .24));
         document.documentElement.style.setProperty('--teal-soft', blend(hex, '#ffffff', .84));
         document.documentElement.style.setProperty('--brand-foreground', foreground);
+        document.documentElement.style.setProperty('--answer-icon-bg', alkalineIconPalette ? '#ffffff' : 'rgba(244, 196, 0, .22)');
+        document.documentElement.style.setProperty('--answer-icon-fg', alkalineIconPalette ? '#2779b8' : 'var(--teal-dark)');
+        document.documentElement.style.setProperty('--platform-logo-filter', alkalineIconPalette ? 'brightness(0) saturate(100%) invert(39%) sepia(35%) saturate(1130%) hue-rotate(165deg) brightness(88%) contrast(87%)' : 'none');
         ['#profile-accent', '#owner-brand-color', '#legacy-brand-color'].forEach((selector) => {
           const input = document.querySelector(selector);
           if (input && input.value !== hex) input.value = hex;
