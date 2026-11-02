@@ -376,7 +376,10 @@
         </div>
         <div class="creator-minimal-row">
           <label class="creator-field business-name-field">Business name
-            <input id="profile-business-name" type="text" maxlength="42" value="SMASH Dance Studios" autocomplete="off" />
+            <select id="business-choice" aria-label="Choose a demo business">
+              <option value="smash-dance">SMASH Dance Studios</option>
+              <option value="alkaline-water">Alkaline Water Store</option>
+            </select>
           </label>
           <span class="demo-only-badge">DEMO ONLY � HOSTED TEST PREVIEW</span>
         </div>
@@ -391,6 +394,7 @@
                 <option value="sample-coffee">Neighborhood Coffee Co. · fictional sample</option>
               </select>
             </label>
+            <input id="profile-business-name" type="hidden" value="SMASH Dance Studios" />
             <label class="creator-field">Industry
               <input id="profile-industry" type="text" maxlength="42" value="Dance studio" autocomplete="off" />
             </label>
@@ -570,6 +574,14 @@
             month: { channels: sampleMonthChannels, status: sampleMonthStatus }
           }
         },
+        'alkaline-water': {
+          businessName: 'Alkaline Water Store', industry: 'Water refill + delivery', accent: '#2779b8', logo: '', photo: '',
+          samples: {
+            day: { channels: [['Google Maps', 3], ['Friend / family', 2], ['Website', 1], ['Yelp', 0]], status: [['Returning customer', 1]] },
+            week: { channels: [['Google Maps', 12], ['Website', 7], ['Friend / family', 5], ['Facebook', 3], ['Yelp', 1]], status: [['Returning customer', 4], ['Not sure', 1]] },
+            month: { channels: [['Google Maps', 31], ['Website', 18], ['Friend / family', 14], ['Facebook', 9], ['Yelp', 2]], status: [['Returning customer', 8], ['Not sure', 2]] }
+          }
+        },
         'alkaline-leon-valley': {
           businessName: 'Alkaline Water Leon Valley', industry: 'Water refill + delivery', accent: '#2779b8', logo: '', photo: '',
           samples: {
@@ -617,6 +629,8 @@
       const resultBars = document.querySelector('#result-bars');
       const statusResults = document.querySelector('#status-results');
       const profilePreset = document.querySelector('#profile-preset');
+      const businessChoice = document.querySelector('#business-choice');
+      const minimalNote = document.querySelector('.creator-minimal-note');
       const profileBusinessName = document.querySelector('#profile-business-name');
       const profileIndustry = document.querySelector('#profile-industry');
       const profileAccent = document.querySelector('#profile-accent');
@@ -699,6 +713,7 @@
       function loadProfileFields(profileId) {
         const profile = demoProfiles[profileId];
         profilePreset.value = profileId;
+        if (businessChoice) businessChoice.value = profileId;
         profileBusinessName.value = profile.businessName;
         profileIndustry.value = profile.industry;
         profileAccent.value = profile.accent;
@@ -728,6 +743,25 @@
         renderResults();
         updateProfileIdentity(businessName, industry, accent, draftLogoData, draftPhotoData);
         showToast(`Applied ${businessName} sample profile`);
+      }
+
+      function requestedProfileId() {
+        const requested = new URLSearchParams(window.location.search).get('business');
+        return requested === 'alkaline-water' ? 'alkaline-water' : 'smash-dance';
+      }
+
+      function activateBusinessProfile(profileId, announce = true) {
+        loadProfileFields(profileId);
+        if (minimalNote) minimalNote.textContent = 'Sample preview · choose one business example. Direct links select the brand on a fresh load.';
+        activeProfileId = profileId;
+        customSources = ['', ''];
+        selectedRange = 'day';
+        lastRecorded = null;
+        confirmation.hidden = true;
+        renderOptions();
+        renderResults();
+        updateProfileIdentity(profileBusinessName.value, profileIndustry.value, profileAccent.value, draftLogoData, draftPhotoData);
+        if (announce) showToast(`Showing ${profileBusinessName.value} sample`);
       }
 
       function renderSourceIcon(option) {
@@ -894,6 +928,7 @@
         renderOptions();
         showToast('Custom sources saved in this demo');
       });
+      businessChoice.addEventListener('change', (event) => activateBusinessProfile(event.target.value));
       profilePreset.addEventListener('change', (event) => loadProfileFields(event.target.value));
       [profileBusinessName, profileIndustry, profileAccent].forEach((input) => input.addEventListener('input', renderDraftPreview));
       profileLogo.addEventListener('change', (event) => {
@@ -968,9 +1003,7 @@
         renderResults();
       });
 
-      renderOptions();
-      renderResults();
-      loadProfileFields('smash-dance');
+      activateBusinessProfile(requestedProfileId(), false);
       updateRole('staff');
     })();
   </script>
