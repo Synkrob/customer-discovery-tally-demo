@@ -385,6 +385,7 @@
               <option value="smash-dance">SMASH Dance Studios</option>
               <option value="alkaline-water">Alkaline Water Store</option>
               <option value="roadmap-brewing">Roadmap Brewing Company</option>
+              <option value="coffee-shop">Coffee Shop</option>
             </select>
           </label>
           <span class="demo-only-badge">DEMO ONLY � HOSTED TEST PREVIEW</span>
@@ -396,6 +397,7 @@
               <select id="profile-preset" aria-label="Choose a demo business profile">
                 <option value="alkaline-water">Alkaline Water Store - sample</option>
                 <option value="roadmap-brewing">Roadmap Brewing Company - sample</option>
+                <option value="coffee-shop">Coffee Shop - fictional sample</option>
                 <option value="smash-dance">SMASH Dance Studios · sample</option>
                 <option value="alkaline-leon-valley">Alkaline Water Leon Valley · sample</option>
                 <option value="alkaline-austin-highway">Alkaline Water Austin Highway · sample</option>
@@ -598,6 +600,14 @@
             month: { channels: [['Friend / family', 28], ['Walked / drove past', 21], ['Website', 14], ['Instagram', 9], ['Google Maps', 7]], status: [['Returning customer', 8], ['Other', 2]] }
           }
         },
+        'coffee-shop': {
+          businessName: 'Coffee Shop', industry: 'Coffee shop', accent: '#2f7d5a', logo: '', photo: '',
+          samples: {
+            day: { channels: [['Walked / drove past', 4], ['Friend / family', 2], ['Google Maps', 1], ['Website', 0]], status: [['Returning customer', 2]] },
+            week: { channels: [['Walked / drove past', 16], ['Friend / family', 9], ['Google Maps', 7], ['Instagram', 4], ['Website', 2]], status: [['Returning customer', 5], ['Other', 1]] },
+            month: { channels: [['Walked / drove past', 42], ['Friend / family', 28], ['Google Maps', 21], ['Instagram', 14], ['Website', 8]], status: [['Returning customer', 12], ['Other', 3]] }
+          }
+        },
         'alkaline-leon-valley': {
           businessName: 'Alkaline Water Leon Valley', industry: 'Water refill + delivery', accent: '#2779b8', logo: '', photo: '',
           samples: {
@@ -765,6 +775,7 @@
       function requestedProfileId() {
         const requested = new URLSearchParams(window.location.search).get('business');
         if (requested === 'roadmap-brewing') return 'roadmap-brewing';
+        if (requested === 'coffee-shop') return 'coffee-shop';
         return requested === 'alkaline-water' ? 'alkaline-water' : 'smash-dance';
       }
 
