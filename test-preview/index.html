@@ -114,14 +114,14 @@
     .question-mark { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; color: var(--teal); background: var(--teal-soft); font-weight: 900; }
     .answer-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
     .answer-grid.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .answer-button { min-height: 126px; display: grid; grid-template-columns: minmax(0, 1fr) 72px; align-items: center; gap: 18px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); background: var(--paper); text-align: left; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
+    .answer-button { min-width: 0; min-height: 126px; display: grid; grid-template-columns: minmax(0, 1fr) 72px; align-items: center; gap: 18px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); background: var(--paper); text-align: left; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
     .answer-button:hover { transform: translateY(-2px); border-color: var(--teal); background: var(--teal-soft); box-shadow: 0 8px 16px rgba(15, 103, 99, .10); }
     .answer-button:disabled { cursor: wait; opacity: .58; transform: none; }
     .answer-icon { display: grid; place-items: center; grid-column: 2; width: 72px; height: 72px; border-radius: 20px; color: var(--answer-icon-fg, var(--teal-dark)); background: var(--answer-icon-bg, rgba(244, 196, 0, .22)); font-size: 31px; font-weight: 950; }
     .platform-logo { display: block; width: 43px; height: 43px; object-fit: contain; filter: var(--platform-logo-filter, none); }
     .generic-icon svg { display: block; width: 43px; height: 43px; }
     .answer-button.text-only { grid-template-columns: minmax(0, 1fr); }
-    .answer-name { grid-column: 1; grid-row: 1; width: auto; max-width: none; color: var(--ink); font-weight: 950; line-height: 1; letter-spacing: -.045em; white-space: nowrap; overflow: visible; text-overflow: clip; text-align: left; }
+    .answer-name { min-width: 0; grid-column: 1; grid-row: 1; width: auto; max-width: 100%; color: var(--ink); font-weight: 950; line-height: 1.05; letter-spacing: -.045em; white-space: normal; overflow-wrap: anywhere; word-break: normal; text-overflow: clip; text-align: left; }
     .answer-button.text-only .answer-name { justify-self: center; text-align: center; }
     .answer-name.label-short { font-size: clamp(18px, 2.5vw, 31px); }
     .answer-name.label-medium { font-size: clamp(15px, 2.1vw, 24px); }
